@@ -1,26 +1,19 @@
 
+from .utils import crawl_data
+
 class player(object):
     def __init__(self, data):
+        self.type = 'player'
         self.data = data
         self.name = data['player']['destinyUserInfo']['displayName']
 
     @classmethod
-    def from_player_data(cls, player_data, api_key=None):
-        # TODO: return dictionary where keys are player name and values are game objects
-        return NotImplemented
+    def players_from_data(cls, player_data, api_key=None):
+        players = {}
+        for pd in player_data:
+            newplayer = player(pd)
+            players[newplayer.name] = newplayer
+        return players
 
-    # TODO: centralize repeated method
     def get(self, datapath):
-        # helper to navigate nested dicts via period-delimited string instead
-        path = datapath.split('.')
-        # start at top of path
-        loc = self.data
-        for p in path:
-            if p in loc.keys():
-                # continue navigating
-                loc = loc[p]
-            else:
-                keys = loc.keys()
-                print "Using {path}, couldn't find {p}. Possible values at this level:\n{keys}".format(**locals())
-                print loc[p]
-        return loc
+        return crawl_data(self, datapath)

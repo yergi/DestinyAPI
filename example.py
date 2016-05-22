@@ -5,7 +5,6 @@ import pandas as pd
 import destiny
 
 game_ids = ['4892996696']
-games = {}
 dfStats = pd.DataFrame(columns=())
 
 # either pass in API key here or set as an environment variable
@@ -13,12 +12,7 @@ dfStats = pd.DataFrame(columns=())
 # export BUNGIE_NET_API_KEY='key'
 api_key = None
 
-# going to add game class method to hide this loop and the rate limiting unpleasantness
-for game_id in game_ids:
-    games[game_id] = destiny.game(game_id, api_key)
-    if games[game_id].api_wait > 0:
-        print "Pausing for {wait} seconds for rate limiting".format(**locals())
-        time.sleep(games[game_id].api_wait + 1)
+games = destiny.game.games_from_ids(game_ids, api_key)
 
 for game_id in game_ids:
     players = games[game_id].players
